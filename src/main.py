@@ -2,45 +2,28 @@ from functools import reduce
 
 from textnode import *
 from htmlnode import HTMLNode, LeafNode, ParentNode
+from markdown_to_blocks import *
 
 def main():
-    #t_node = TextNode("This is a text node", TextType.LINK, "https://www.boot.dev")
-    #print(t_node)
-    #child = HTMLNode(tag="child", value="foo bar", props={"test": "true"})
-    #html_node = HTMLNode(tag="div", children=[child], props={"action": "false"})
-    #print(html_node)
+    md = """### This is a heading
 
-    #child1 = LeafNode(value="str")
-    #child2 = LeafNode(tag="child", value="foo bar")
-    #parent = ParentNode(tag="div", children=[child1, child2])
-    #print(f"\nNew Node\n{parent.to_html()}")
+This is a paragraph of text. It has some **bold** and *italic* words inside of it.
 
-    #leaf = LeafNode(value="plain text", props={"href": "some url"})
-    #leaf_tag = LeafNode(tag="p", value="para", props={"style": "font-weight:bold;"})
-    #print(f"\n{leaf.to_html()}")
-    #print(f"\n{leaf_tag.to_html()}")
+```codeblock **bolded**```
 
-    #link = text_node_to_html_node(t_node)
-    #print(f"\n\nlink: {link.to_html()}")
+* 1
+* 2
+* *3*
 
-    # test_nodes = [
-    #     TextNode("testing 1 `2` 3...", TextType.TEXT),
-    #     TextNode("`code block`", TextType.TEXT),
-    #     TextNode("**bold** text", TextType.TEXT),
-    #     TextNode("*text* italic", TextType.TEXT)
-    # ]
-    # test_nodes = split_nodes_delimiter(test_nodes, "`", TextType.CODE)
-    # test_nodes = split_nodes_delimiter(test_nodes, "**", TextType.BOLD)
-    # test_nodes = split_nodes_delimiter(test_nodes, "*", TextType.ITALIC)
+. 1
+.  2
+.   3
 
-    # string = reduce(lambda r, tn: r + f"\n{tn}", test_nodes, "\n---\nparsed\n")
-    # print(string)
-
-    text = "`code block` some *markdown* ![alt text](src) more text [link text](href) **blah** blah"
-    nodes = text_to_textnodes(text)
-    string = reduce(lambda r, tn: r + f"\n{tn}", nodes, "\n---\nparsed\n")
-    print(string)
-    print(len(nodes))
+>*some* **quotes**...
+>over here
+"""
+    node = markdown_to_html_node(md)
+    print(node.to_html())
 
 if __name__ == "__main__":
     main()
