@@ -29,7 +29,7 @@ class LeafNodeTests(unittest.TestCase):
         leaf = LeafNode(value="plain text")
         self.assertEqual(leaf.to_html(), "plain text")
     
-    def do_not_render_props_without_tag(self):
+    def test_do_not_render_props_without_tag(self):
         leaf = LeafNode(value="plain text", props={"href": "some url"})
         self.assertEqual(leaf.to_html(), "plain text")
     
@@ -46,10 +46,10 @@ class ParentNodeTests(unittest.TestCase):
         with self.assertRaises(TypeError):
             ParentNode()
     
-    def creates_html_with_children(self):
+    def test_creates_html_with_children(self):
         child = LeafNode(value="foo")
         child_w_tag = LeafNode(tag="p", value="bar")
-        parent = HTMLNode(tag="div", children=[child, child_w_tag])
+        parent = ParentNode(tag="div", children=[child, child_w_tag])
         self.assertEqual(parent.to_html(), "<div>foo<p>bar</p></div>")
 
 if __name__ == "__main__":

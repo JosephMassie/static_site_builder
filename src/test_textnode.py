@@ -1,6 +1,6 @@
 import unittest
 
-from textnode import TextNode, TextType, split_nodes_delimiter
+from textnode import TextNode, TextType, split_nodes_delimiter, extract_markdown_links, extract_markdown_images
 
 
 class TestTextNode(unittest.TestCase):
@@ -37,11 +37,24 @@ class TestSplitDelimiters(unittest.TestCase):
         self.assertEqual(nodes[1].text_type, TextType.BOLD.value)
         self.assertEqual(len(nodes), 3)
     
-    def multiple_types(self):
+    def test_multiple_types(self):
         node1 = TextNode("some **bold** text", TextType.TEXT)
         node2 = TextNode("some `code` block", TextType.TEXT)
         nodes = split_nodes_delimiter([node1, node2], "`", TextType.CODE)
         self.assertEqual(len(nodes), 4)
+
+class TestLinkAndImageExtracts(unittest.TestCase):
+    def test_image_extract(self):
+        text = "some markdown ![alt text](src) \n more text [link text](href) blah blah"
+        matches = extract_markdown_images(text)
+        self.assertEqual(len(matches), 1)
+        self.assertEqual(matches[0], ("alt text", "src"))
+    
+    def test_link_extract(self):
+        text = "some markdown ![alt text](src) \n more text [link text](href) blah blah"
+        matches = extract_markdown_links(text)
+        self.assertEqual(len(matches), 1)
+        self.assertEqual(matches[0], ("link text", "href"))
 
 if __name__ == "__main__":
     unittest.main()

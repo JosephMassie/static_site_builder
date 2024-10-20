@@ -1,3 +1,4 @@
+import re
 from enum import Enum
 from htmlnode import LeafNode
 
@@ -71,3 +72,48 @@ def split_nodes_delimiter(old_nodes: list[TextNode], delimiter: str, text_type: 
             new_nodes.extend(nodes)
     return new_nodes
 
+def extract_markdown_images(text: str):
+    matches = re.findall(r"!\[(.*?)\]\((.*?)\)", text)
+    return matches
+
+def split_nodes_image(old_nodes: list[TextNode]) -> list[TextNode]:
+    new_nodes = []
+    for node in old_nodes:
+        matches = extract_markdown_images(node.text)
+        if node.text_type != TextType.TEXT.value or len(matches) == 0:
+            new_nodes.append(node)
+        else:
+            text = node.text
+            for i in range(len(matches)):
+                alt, src = matches[i]
+                sections = text.split(f"![{alt}]({src})", 1)
+                if sections[0] != "":
+                    new_nodes.append(TextNode(sections[0], TextType.TEXT))
+                new_nodes.append(TextNode(alt, TextType.IMAGE, src))
+                text = sections[1]
+            if text != "":
+                new_nodes.append(TextNode(text, TextType.TEXT))
+    return new_nodes
+
+def extract_markdown_links(text: str):
+    matches = re.findall(r"[^!]\[(.*?)\]\((.*?)\)", text)
+    return matches
+
+def split_nodes_link(old_nodes: list[TextNode]) -> list[TextNode]:
+    new_nodes = []
+    for node in old_nodes:
+        matches = extract_markdown_links(node.text)
+        if node.text_type != TextType.TEXT.value or len(matches) == 0:
+            new_nodes.append(node)
+        else:
+            text = node.text
+            for i in range(len(matches)):
+                alt, src = matches[i]
+                sections = text.split(f"[{alt}]({src})", 1)
+                if sections[0] != "":
+                    new_nodes.append(TextNode(sections[0], TextType.TEXT))
+                new_nodes.append(TextNode(alt, TextType.LINK, src))
+                text = sections[1]
+            if text != "":
+                new_nodes.append(TextNode(text, TextType.TEXT))
+    return new_nodes
