@@ -1,6 +1,6 @@
 import unittest
 
-from textnode import TextNode, TextType
+from textnode import TextNode, TextType, split_nodes_delimiter
 
 
 class TestTextNode(unittest.TestCase):
@@ -24,6 +24,24 @@ class TestTextNode(unittest.TestCase):
         node2 = TextNode("Image node", TextType.BOLD, "https://www.google.com")
         self.assertNotEqual(node, node2)
 
+class TestSplitDelimiters(unittest.TestCase):
+    def test_code(self):
+        node = TextNode("some `code` block", TextType.TEXT)
+        nodes = split_nodes_delimiter([node], "`", TextType.CODE)
+        self.assertEqual(nodes[1].text_type, TextType.CODE.value)
+        self.assertEqual(len(nodes), 3)
+    
+    def test_bold(self):
+        node = TextNode("**bold** text", TextType.TEXT)
+        nodes = split_nodes_delimiter([node], "**", TextType.BOLD)
+        self.assertEqual(nodes[1].text_type, TextType.BOLD.value)
+        self.assertEqual(len(nodes), 3)
+    
+    def multiple_types(self):
+        node1 = TextNode("some **bold** text", TextType.TEXT)
+        node2 = TextNode("some `code` block", TextType.TEXT)
+        nodes = split_nodes_delimiter([node1, node2], "`", TextType.CODE)
+        self.assertEqual(len(nodes), 4)
 
 if __name__ == "__main__":
     unittest.main()
