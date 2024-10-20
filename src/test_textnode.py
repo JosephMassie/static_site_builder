@@ -1,6 +1,7 @@
 import unittest
+from functools import reduce
 
-from textnode import TextNode, TextType, split_nodes_delimiter, extract_markdown_links, extract_markdown_images
+from textnode import *
 
 
 class TestTextNode(unittest.TestCase):
@@ -55,6 +56,25 @@ class TestLinkAndImageExtracts(unittest.TestCase):
         matches = extract_markdown_links(text)
         self.assertEqual(len(matches), 1)
         self.assertEqual(matches[0], ("link text", "href"))
+
+class TestTextToNodes(unittest.TestCase):
+    def test_main(self):
+        text = "`code block` some *markdown* ![alt text](src) more text [link text](href) **blah** blah"
+        nodes = text_to_textnodes(text)
+        string = reduce(lambda r, tn: r + f"\n{tn}", nodes, "")
+        self.assertEqual(len(nodes), 11)
+        self.assertEqual(string, """
+TextNode(, 0, None)
+TextNode(code block, 3, None)
+TextNode( some , 0, None)
+TextNode(markdown, 2, None)
+TextNode( , 0, None)
+TextNode(alt text, 5, src)
+TextNode( more text , 0, None)
+TextNode(link text, 4, href)
+TextNode( , 0, None)
+TextNode(blah, 1, None)
+TextNode( blah, 0, None)""")
 
 if __name__ == "__main__":
     unittest.main()

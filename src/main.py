@@ -36,12 +36,11 @@ def main():
     # string = reduce(lambda r, tn: r + f"\n{tn}", test_nodes, "\n---\nparsed\n")
     # print(string)
 
-    text = "some markdown ![alt text](src) more text [link text](href) blah blah"
-    node = TextNode(text, TextType.TEXT)
-    updated_nodes = split_nodes_link([node])
-    updated_nodes = split_nodes_image(updated_nodes)
-    string = reduce(lambda r, tn: r + f"\n{tn}", updated_nodes, "\n---\nparsed\n")
+    text = "`code block` some *markdown* ![alt text](src) more text [link text](href) **blah** blah"
+    nodes = text_to_textnodes(text)
+    string = reduce(lambda r, tn: r + f"\n{tn}", nodes, "\n---\nparsed\n")
     print(string)
+    print(len(nodes))
 
 if __name__ == "__main__":
     main()
