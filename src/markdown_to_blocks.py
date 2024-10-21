@@ -44,10 +44,10 @@ def markdown_to_html_node(markdown: str) -> ParentNode:
         match block_type:
             case "quote":
                 lines = block.splitlines()
-                lines = list(map(lambda l: l.lstrip(">"), lines))
+                lines = list(map(lambda l: l.lstrip(">").strip(), lines))
                 content = "\n".join(lines)
                 children = get_children(content)
-                quote = ParentNode(tag="quote", children=children)
+                quote = ParentNode(tag="blockquote", children=children)
                 main_child_nodes.append(quote)
                 pass
             case "ordered list":

@@ -65,6 +65,8 @@ def split_nodes_delimiter(old_nodes: list[TextNode], delimiter: str, text_type: 
         if node.text_type != TextType.TEXT.value or delim_count == 0:
             new_nodes.append(node)
         elif delim_count % 2 != 0:
+            print(f"{delim_count} '{delimiter}'")
+            print(node.text_type, node.text)
             raise Exception("invalid markdown syntax all delimiters must be paired")
         else:
             blocks = node.text.split(delimiter);
@@ -96,7 +98,7 @@ def split_nodes_image(old_nodes: list[TextNode]) -> list[TextNode]:
     return new_nodes
 
 def extract_markdown_links(text: str):
-    matches = re.findall(r"[^!]\[(.*?)\]\((.*?)\)", text)
+    matches = re.findall(r"\[(.*?)\]\((.*?)\)", text)
     return matches
 
 def split_nodes_link(old_nodes: list[TextNode]) -> list[TextNode]:
@@ -119,17 +121,18 @@ def split_nodes_link(old_nodes: list[TextNode]) -> list[TextNode]:
     return new_nodes
 
 def text_to_textnodes(text: str) -> list[TextNode]:
+    nodes = [TextNode(text, TextType.TEXT)]
+
+    nodes = split_nodes_image(nodes)
+    nodes = split_nodes_link(nodes)
+
     delimiters = [
         ("`", TextType.CODE),
         ("**", TextType.BOLD),
         ("*", TextType.ITALIC),
+        ("_", TextType.ITALIC)
     ]
-
-    nodes = [TextNode(text, TextType.TEXT)]
     for (delimiter, text_type) in delimiters:
         nodes = split_nodes_delimiter(nodes, delimiter, text_type)
-    
-    nodes = split_nodes_image(nodes)
-    nodes = split_nodes_link(nodes)
 
     return nodes
