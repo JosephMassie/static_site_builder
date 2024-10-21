@@ -29,5 +29,7 @@ def generate_page(from_path: str, template_path: str, dest_path: str):
                 template = template_file.read()
                 template = template.replace("{{ Title }}", title)
                 template = template.replace("{{ Content }}", node.to_html())
-                print(template)
-    pass
+        if os.path.isfile(dest_path):
+            os.remove(dest_path)
+        with open(dest_path, "w") as index_html:
+            index_html.write(template)

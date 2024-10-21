@@ -6,7 +6,7 @@ from markdown_to_blocks import *
 from build import *
 
 def main():
-    #copy_dir()
+    copy_dir()
     generate_page("./content/index.md", "./template.html", "./public/index.html")
 
 if __name__ == "__main__":

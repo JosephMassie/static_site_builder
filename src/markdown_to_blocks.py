@@ -26,7 +26,7 @@ def block_to_type(block: str):
     
     is_ordered_list = True
     for i in range(len(lines)):
-        start = ". " + "".join([" "] * i)
+        start = f"{i+1}. "
         is_ordered_list = is_ordered_list and lines[i].startswith(start)
     if is_ordered_list:
         return "ordered list"
@@ -55,8 +55,7 @@ def markdown_to_html_node(markdown: str) -> ParentNode:
                 uo_children = []
                 for i in range(len(lines)):
                     line = lines[i]
-                    rep = ". " + "".join([" "] * i)
-                    content = line.replace(rep, "")
+                    content = line.replace(f"{i+1}. ", "")
                     children = get_children(content)
                     li_item = ParentNode(tag="li", children=children)
                     uo_children.append(li_item)
