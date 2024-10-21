@@ -98,3 +98,9 @@ def markdown_to_html_node(markdown: str) -> ParentNode:
             case _:
                 raise Exception("invalid block type")
     return ParentNode(tag="div", children=main_child_nodes)
+
+def extract_title(markdown: str) -> str:
+    match = re.search(r"^# (.*?)$", markdown, re.RegexFlag.MULTILINE)
+    if match != None:
+        return match.group(1)
+    return ""
